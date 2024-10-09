@@ -40,7 +40,6 @@ class PlaywrightTestBase(TransactionTestCase):
 
     @classmethod
     def email_details(cls, page, details=data.EMAIL_DETAILS):
-        page.get_by_label("What is your email address?").click()
         page.get_by_label("What is your email address?").fill(details["email"])
         page.get_by_role("button", name="Continue").click()
         return page
@@ -126,4 +125,14 @@ class PlaywrightTestBase(TransactionTestCase):
         page.get_by_role("link", name="View and print your report").click()
         page.get_by_text("What did you think of this service? (takes 30 seconds)").click()
         page.get_by_role("link", name="What did you think of this").click()
+        return page
+
+
+class StartTestBase(PlaywrightTestBase):
+    def business_input_goes_to_third_party(self, page):
+        page.get_by_label("A business or businesses with").check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("Yes").check()
+        page.get_by_role("button", name="Continue").click()
+        self.verify_email_details(page)
         return page

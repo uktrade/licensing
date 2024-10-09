@@ -1,13 +1,15 @@
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.cache.backends.dummy import DummyCache
+from django.forms import Form
+from django.http import HttpResponse
 
-from .base import *  # noqa
+from .base import *  # noqafrom apply_for_a_licence.models import UserEmailVerification
 
 TEST_EMAIL_VERIFY_CODE = True
 
 HEADLESS = True
 
-BASE_FRONTEND_TESTING_URL = "http://apply-for-a-licence:8000"
+BASE_FRONTEND_TESTING_URL = "http://127.0.0.1:28000/"
 
 ENVIRONMENT = "test"
 
@@ -45,3 +47,20 @@ class TestingCache(DummyCache):
 
 
 CACHES = {"default": {"BACKEND": "config.settings.test.TestingCache"}}
+
+
+def test_request_verify_code(self, form: Form) -> HttpResponse:
+    """Monkey-patching the form_valid of the request verify code view to always use the same verify code for testing."""
+
+    from apply_for_a_licence.models import UserEmailVerification
+    from apply_for_a_licence.views.views_start import WhatIsYouEmailAddressView
+    from django.contrib.sessions.models import Session
+
+    verify_code = "012345"
+    user_session = Session.objects.get(session_key=self.request.session.session_key)
+    UserEmailVerification.objects.create(
+        user_session=user_session,
+        email_verification_code=verify_code,
+    )
+
+    return super(WhatIsYouEmailAddressView, self).form_valid(form)
