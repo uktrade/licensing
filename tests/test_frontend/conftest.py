@@ -126,6 +126,14 @@ class StartBase(PlaywrightTestBase):
         self.verify_email_details(page)
         return page
 
+    def business_not_third_party(self, page):
+        page.get_by_label("A business or businesses with").check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("No").check()
+        page.get_by_role("button", name="Continue").click()
+        self.verify_email_details(page)
+        return page
+
     def individual_third_party(self, page):
         page.get_by_label("Named individuals with a UK").check()
         page.get_by_role("button", name="Continue").click()
@@ -142,7 +150,7 @@ class StartBase(PlaywrightTestBase):
 
 
 class ProviderBase(PlaywrightTestBase):
-    def provider_business_uk(self, page):
+    def provider_business_located_in_uk(self, page):
         self.your_details(page, "business")
         page.get_by_label("No", exact=True).check()
         page.get_by_role("button", name="Continue").click()
@@ -151,9 +159,14 @@ class ProviderBase(PlaywrightTestBase):
         self.fill_uk_address_details(page, "business")
         return page
 
-    def provider_business_non_uk(self, page):
-        # todo
-        pass
+    def provider_business_located_outside_uk(self, page):
+        self.your_details(page, "business")
+        page.get_by_label("No", exact=True).check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("Outside the UK").check()
+        page.get_by_role("button", name="Continue").click()
+        self.fill_non_uk_address_details(page)
+        return page
 
     def provider_individual_located_in_uk(self, page):
         self.your_details(page, "individual")

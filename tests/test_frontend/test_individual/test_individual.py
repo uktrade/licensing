@@ -13,7 +13,7 @@ from tests.test_frontend.conftest import (
 class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase):
     """Tests for the individual journey"""
 
-    def test_entire_journey_uk(self):
+    def test_third_Party_located_in_uk(self):
         self.page.goto("http://apply-for-a-licence:28000/apply/")
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
