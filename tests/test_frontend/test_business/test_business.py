@@ -46,3 +46,22 @@ class TestAddBusiness(StartBase, ProviderBase, RecipientBase, LicensingGroundsBa
         self.declaration_and_complete_page(self.page)
         expect(self.page).to_have_url(re.compile(r".*/application-complete"))
         # TODO check there is a reference number
+
+    def test_add_another_business_and_remove(self):
+        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.business_not_third_party(self.page)
+        expect(self.page).to_have_url(re.compile(r".*/your-details"))
+        self.provider_business_located_in_uk(self.page)
+        expect(self.page).to_have_url(re.compile(r".*/add-business"))
+        self.page.get_by_label("Yes").check()
+        self.page.get_by_role("button", name="Continue").click()
+        self.page.get_by_label("No", exact=True).check()
+        self.page.get_by_role("button", name="Continue").click()
+        self.page.get_by_label("Outside the UK").check()
+        self.page.get_by_role("button", name="Continue").click()
+        self.fill_non_uk_address_details(self.page)
+        expect(self.page).to_have_url(re.compile(r".*/add-business"))
+        expect(self.page.get_by_role("heading", name="You've added 2 businesses")).to_be_visible()
+        self.page.get_by_role("button", name="Remove business 1").click()
+        expect(self.page).to_have_url(re.compile(r".*/add-business"))
+        expect(self.page.get_by_role("heading", name="You've added 1 business")).to_be_visible()
