@@ -64,46 +64,23 @@ class PlaywrightTestBase(TransactionTestCase):
 
         return page
 
-    def fill_uk_address_details(cls, page, details=data.UK_ADDRESS_DETAILS):
+    def fill_uk_address_details(cls, page, type, details=data.UK_ADDRESS_DETAILS):
         # UK Address Details Page
-        page.get_by_label("Name of business or person").click()
-        page.get_by_label("Name of business or person").fill(details["name"])
-        page.get_by_label("Name of business or person").press("Tab")
-        page.get_by_label("Website address").fill(details["website"])
-        page.get_by_label("Website address").press("Tab")
+        if type == "recipient" or type == "business":
+            page.get_by_label(f"Name of {type}").fill(details["name"])
         page.get_by_label("Address line 1").fill(details["address_line_1"])
-        page.get_by_label("Address line 1").press("Tab")
-        page.get_by_label("Address line 2").fill(details["address_line_2"])
-        page.get_by_label("Address line 2").press("Tab")
         page.get_by_label("Town or city").fill(details["town"])
-        page.get_by_label("Town or city").press("Tab")
-        page.get_by_label("County").fill(details["county"])
-        page.get_by_label("County").press("Tab")
         page.get_by_label("Postcode").fill(details["postcode"])
         page.get_by_role("button", name="Continue").click()
-
         return page
 
     @classmethod
     def fill_non_uk_address_details(cls, page, details=data.NON_UK_ADDRESS_DETAILS):
         # NON UK Address Details Page
-        page.get_by_label("Name of business or person").click()
-        page.get_by_label("Name of business or person").fill(details["name"])
-        page.get_by_label("Name of business or person").press("Tab")
-        page.get_by_label("Website address").fill(details["website"])
-        page.get_by_label("Website address").press("Tab")
+        page.get_by_label("Name of business").fill(details["name"])
         page.get_by_label("Country").select_option(details["country"])
-        page.get_by_label("Country").press("Tab")
+        page.get_by_label("Town").fill(details["town"])
         page.get_by_label("Address line 1").fill(details["address_line_1"])
-        page.get_by_label("Address line 1").press("Tab")
-        page.get_by_label("Address line 2").fill(details["address_line_2"])
-        page.get_by_label("Address line 2").press("Tab")
-        page.get_by_label("Address line 3").fill(details["address_line_3"])
-        page.get_by_label("Address line 3").press("Tab")
-        page.get_by_label("Address line 4").fill(details["address_line_4"])
-        page.get_by_label("Address line 4").press("Tab")
-        page.get_by_label("Town or city").fill(details["town"])
-        page.get_by_label("Town or city").press("Tab")
         page.get_by_role("button", name="Continue").click()
         return page
 
@@ -112,27 +89,106 @@ class PlaywrightTestBase(TransactionTestCase):
         #
         # Declaration Page
         #
-        page.get_by_role("heading", name="Declaration").click()
         page.get_by_label("I agree and accept").check()
-        page.get_by_role("button", name="Continue").click()
+        page.get_by_role("button", name="Submit").click()
         #
         # Complete Page
         #
-        page.get_by_role("heading", name="Submission complete").click()
-        page.get_by_text("Your reference number").click()
-        page.get_by_role("heading", name="What happens next").click()
-        page.get_by_text("We have sent you a").click()
-        page.get_by_role("link", name="View and print your report").click()
-        page.get_by_text("What did you think of this service? (takes 30 seconds)").click()
-        page.get_by_role("link", name="What did you think of this").click()
         return page
 
+    def no_more_additions(cls, page):
+        page.get_by_label("No").check()
+        page.get_by_role("button", name="Continue").click()
 
-class StartTestBase(PlaywrightTestBase):
-    def business_input_goes_to_third_party(self, page):
+    def check_your_answers(cls, page):
+        # TODO
+        pass
+
+    def your_details(cls, page, type, details=data.YOUR_DETAILS):
+        if type == "myself":
+            page.get_by_label("First name").fill("Test first name")
+            page.get_by_label("Last name").fill("Test last name")
+            page.get_by_label("UK national located in the UK", exact=True).check()
+            page.get_by_role("button", name="Continue").click()
+        else:
+            page.get_by_label("Full name").fill(details["full_name"])
+            page.get_by_label("Business you work for").fill(details["business"])
+            page.get_by_label("Your role").fill(details["role"])
+            page.get_by_role("button", name="Continue").click()
+
+
+class StartBase(PlaywrightTestBase):
+    def business_third_party(self, page):
         page.get_by_label("A business or businesses with").check()
         page.get_by_role("button", name="Continue").click()
         page.get_by_label("Yes").check()
         page.get_by_role("button", name="Continue").click()
         self.verify_email_details(page)
         return page
+
+    def individual_third_party(self, page):
+        page.get_by_label("Named individuals with a UK").check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("Yes").check()
+        page.get_by_role("button", name="Continue").click()
+        self.verify_email_details(page)
+        return page
+
+    def myself(self, page):
+        page.get_by_label("Myself").check()
+        page.get_by_role("button", name="Continue").click()
+        self.verify_email_details(page)
+        return page
+
+
+class ProviderBase(PlaywrightTestBase):
+    def provider_business_uk(self, page):
+        self.your_details(page, "business")
+        page.get_by_label("No", exact=True).check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("In the UK").check()
+        page.get_by_role("button", name="Continue").click()
+        self.fill_uk_address_details(page, "business")
+        return page
+
+    def provider_business_non_uk(self, page):
+        # todo
+        pass
+
+    def provider_individual_located_in_uk(self, page):
+        self.your_details(page, "individual")
+        page.get_by_label("First name").fill("Test first name")
+        page.get_by_label("Last name").fill("Test last name")
+        page.get_by_label("UK national located in the UK", exact=True).check()
+        page.get_by_role("button", name="Continue").click()
+        self.fill_uk_address_details(page, "individual")
+        return page
+
+    def provider_myself_located_in_uk(self, page):
+        self.your_details(page, "myself")
+        self.fill_uk_address_details(page, "individual")
+        return page
+
+
+class RecipientBase(PlaywrightTestBase):
+    def recipient_simple(self, page, type):
+        page.get_by_label("No").check()
+        page.get_by_role("button", name="Continue").click()
+        if type == "individual":
+            self.fill_non_uk_address_details(page)
+        page.get_by_label("Energy-related services (").check()
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("Describe the specific").fill("Test description")
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_label("In the UK").check()
+        page.get_by_role("button", name="Continue").click()
+        self.fill_uk_address_details(page, "recipient")
+        page.get_by_label("What is the relationship").fill("Test relationship")
+        page.get_by_role("button", name="Continue").click()
+
+
+class LicensingGroundsBase(PlaywrightTestBase):
+    def licensing_grounds_simple(self, page):
+        page.get_by_label("What is your purpose for").fill("Test purpose")
+        page.get_by_role("button", name="Continue").click()
+        page.get_by_role("button", name="Continue").click()

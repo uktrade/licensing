@@ -8,7 +8,6 @@ class ApplyForALicenceConfig(AppConfig):
 
     def ready(self) -> None:
         if settings.ENVIRONMENT == "test":
-            print("HELLO IM IN THE TEST ENV")
             # if we're running on a test environment, we want to override the process_email_step method, so we always use the same
             # code for testing and don't send any emails
             from apply_for_a_licence.views.views_start import WhatIsYouEmailAddressView
