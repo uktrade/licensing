@@ -9,7 +9,7 @@ TEST_EMAIL_VERIFY_CODE = True
 
 HEADLESS = True
 
-BASE_FRONTEND_TESTING_URL = "http://127.0.0.1:28000/"
+BASE_FRONTEND_TESTING_URL = "http://apply-for-a-licence:28000/apply/"
 
 ENVIRONMENT = "test"
 

@@ -4,6 +4,7 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
+    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -14,7 +15,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
     """Tests for the individual journey"""
 
     def test_third_Party_located_in_uk(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_individual_located_in_uk(self.page, first_individual_added=True)
@@ -31,7 +32,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
         # TODO check there is a reference number
 
     def test_add_another_individual_and_remove(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_individual_located_in_uk(self.page, first_individual_added=True)
@@ -46,7 +47,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
         expect(self.page.get_by_role("heading", name="You've added 1 individual")).to_be_visible()
 
     def test_uk_national_located_outside_the_uk(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "individual")
@@ -58,7 +59,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
         expect(self.page).to_have_url(re.compile(r".*/add-individual"))
 
     def test_dual_national_located_in_uk(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "individual")
@@ -70,7 +71,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
         expect(self.page).to_have_url(re.compile(r".*/add-individual"))
 
     def test_dual_national_located_outside_uk(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "individual")
@@ -82,7 +83,7 @@ class TestAddIndividual(StartBase, ProviderBase, RecipientBase, LicensingGrounds
         expect(self.page).to_have_url(re.compile(r".*/add-individual"))
 
     def test_non_uk_national(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.individual_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "individual")

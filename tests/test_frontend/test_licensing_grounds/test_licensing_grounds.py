@@ -4,6 +4,7 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
+    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -14,7 +15,7 @@ class TestLicensingGrounds(StartBase, ProviderBase, RecipientBase, LicensingGrou
     """Tests for each of the outcomes based on which recipient is chosen"""
 
     def test_legal(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)
@@ -26,7 +27,7 @@ class TestLicensingGrounds(StartBase, ProviderBase, RecipientBase, LicensingGrou
         expect(self.page).to_have_url(re.compile(r".*/licensing-grounds"))
 
     def test_non_legal(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)
@@ -38,7 +39,7 @@ class TestLicensingGrounds(StartBase, ProviderBase, RecipientBase, LicensingGrou
         expect(self.page).to_have_url(re.compile(r".*/licensing-grounds"))
 
     def test_legal_and_other(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)

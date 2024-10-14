@@ -2,14 +2,14 @@ import re
 
 from playwright.sync_api import expect
 
-from tests.test_frontend.conftest import ProviderBase, StartBase
+from tests.test_frontend.conftest import PlaywrightTestBase, ProviderBase, StartBase
 
 
 class TestCompaniesHouse(StartBase, ProviderBase):
     """Tests for the companies house journey"""
 
     def test_companies_house_number_unknown(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "business")
@@ -20,7 +20,7 @@ class TestCompaniesHouse(StartBase, ProviderBase):
         expect(self.page).to_have_url(re.compile(r".*/where-business-located"))
 
     def test_companies_house_number_incorrect(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "business")
@@ -40,7 +40,7 @@ class TestCompaniesHouse(StartBase, ProviderBase):
         expect(self.page).to_have_url(re.compile(r".*/registered-company-number"))
 
     def test_companies_house_number(self):
-        self.page.goto("http://apply-for-a-licence:28000/apply/")
+        self.page.goto(PlaywrightTestBase.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.your_details(self.page, "business")
