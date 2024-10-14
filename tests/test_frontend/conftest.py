@@ -5,7 +5,7 @@ from django.conf import settings
 from django.test.testcases import TransactionTestCase
 from playwright.sync_api import expect, sync_playwright
 
-from tests.test_frontend import data
+from tests.test_frontend.fixtures import data
 
 
 class PlaywrightTestBase(TransactionTestCase):
@@ -73,10 +73,6 @@ class PlaywrightTestBase(TransactionTestCase):
         page.get_by_label("No").check()
         page.get_by_role("button", name="Continue").click()
 
-    def check_your_answers(cls, page):
-        # TODO
-        pass
-
     def your_details(cls, page, type, details=data.YOUR_DETAILS):
         if type == "myself":
             page.get_by_label("First name").fill("Test first name")
@@ -88,6 +84,36 @@ class PlaywrightTestBase(TransactionTestCase):
             page.get_by_label("Business you work for").fill(details["business"])
             page.get_by_label("Your role").fill(details["role"])
             page.get_by_role("button", name="Continue").click()
+
+    def check_your_answers(cls, page, third_party=True, type="business"):
+        expect(page).to_have_url(re.compile(r".*/check-your-answers"))
+        if type != "myself":
+            cls.cya_your_details(page, third_party)
+        expect(page.get_by_test_id("previous-licence")).to_have_text("No")
+        cls.cya_overview(page)
+        cls.cya_recipients(page)
+        cls.cya_purposes(page)
+
+    def cya_your_details(cls, page, third_party):
+        expect(page.get_by_test_id("your-details-name")).to_have_text("Test full name")
+        expect(page.get_by_test_id("your-details-business")).to_have_text("Test business")
+        expect(page.get_by_test_id("your-details-role")).to_have_text("Test role")
+        if third_party:
+            expect(page.get_by_test_id("your-details-third-party")).to_have_text("Yes")
+        else:
+            expect(page.get_by_test_id("your-details-third-party")).to_have_text("No")
+
+    def cya_overview(cls, page):
+        expect(page.get_by_test_id("services-type")).to_have_text("Energy-related services (Russia)")
+        expect(page.get_by_test_id("services-description")).to_have_text("Test description")
+
+    def cya_recipients(cls, page):
+        expect(page.get_by_test_id("recipient-name-and-address")).to_have_text("business\nA1, Town, AA0 0AA, United Kingdom")
+        expect(page.get_by_test_id("recipient-relationship")).to_have_text("Test relationship")
+
+    def cya_purposes(cls, page):
+        expect(page.get_by_test_id("purpose")).to_have_text("Test purpose")
+        expect(page.get_by_test_id("supporting-documents")).to_have_text("None uploaded")
 
     def check_submission_complete_page(cls, page):
         expect(page).to_have_url(re.compile(r".*/application-complete"))
