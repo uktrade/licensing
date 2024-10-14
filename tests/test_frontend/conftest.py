@@ -1,8 +1,9 @@
 import os
+import re
 
 from django.conf import settings
 from django.test.testcases import TransactionTestCase
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from tests.test_frontend import data
 
@@ -87,6 +88,11 @@ class PlaywrightTestBase(TransactionTestCase):
             page.get_by_label("Business you work for").fill(details["business"])
             page.get_by_label("Your role").fill(details["role"])
             page.get_by_role("button", name="Continue").click()
+
+    def check_submission_complete_page(cls, page):
+        expect(page).to_have_url(re.compile(r".*/application-complete"))
+        expect(page.locator("text=Submission complete")).to_be_visible()
+        expect(page.locator("text=Your reference number")).to_be_visible()
 
 
 class StartBase(PlaywrightTestBase):
