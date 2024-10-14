@@ -26,7 +26,6 @@ class TestUpload(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase):
         self.page.get_by_label("What is your purpose for").fill("Test purpose")
         self.page.get_by_role("button", name="Continue").click()
         self.page.get_by_text("Choose files").click()
-        # self.page.get_by_label("Upload a file").set_input_files("./tests/test_frontend/fixturesTest.pdf")
         self.page.get_by_label("Upload a file").set_input_files("./tests/test_frontend/fixtures/Test.pdf")
         expect(self.page.locator("text=Test.pdf")).to_be_visible()
         self.page.get_by_role("button", name="Continue").click()
