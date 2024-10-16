@@ -3,10 +3,6 @@ We use playwright for end-to-end testing.
 To run the end-to-end tests for licensing:\
 `invoke frontendtests`
 
-
-Currently, end-to-end test must be run as testfiles separately
-e.g. `pipenv run pytest tests/test_frontend/test_business/test_business_details` as there are some issues when they are run as a full test-suite.
-
 ## Test structure
 Tests are currently organised in folders corresponding to the views. Within each folder, each view/step of apply-for-a-licence will have its own testfile.
 
