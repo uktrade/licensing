@@ -83,7 +83,7 @@ jobs:
             PERMANENT_S3_BUCKET_NAME: permanent-document-bucket
             PERMANENT_S3_BUCKET_ACCESS_KEY_ID: test
             PERMANENT_S3_BUCKET_SECRET_ACCESS_KEY: test
-            HEADLESS: "True"
+            HEADLESS: true
             DJANGO_ALLOW_ASYNC_UNSAFE: "True"
         - image: cimg/postgres:16.1
           environment:
@@ -111,7 +111,7 @@ jobs:
         - run:
             name: Run front-end tests
             command: |
-              pipenv run playwright install --with-deps chromium
+              pipenv run playwright install --with-deps firefox
               pipenv run pytest tests/test_frontend --browser firefox
 
         - run:
