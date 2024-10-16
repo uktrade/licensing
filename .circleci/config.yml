@@ -110,7 +110,7 @@ jobs:
         - run:
             name: Run front-end tests
             command: |
-              playwright install firefox
+              playwright install --with-deps chromium
               pipenv run python django_app/manage.py test tests/test_frontend --settings=config.settings.test
 
         - run:
