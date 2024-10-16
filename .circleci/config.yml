@@ -111,6 +111,7 @@ jobs:
         - run:
             name: Run front-end tests
             command: |
+              sudo tee -a /etc/hosts \<<<'127.0.0.1 apply-for-a-licence'
               pipenv run playwright install --with-deps firefox
               pipenv run pytest tests/test_frontend --browser firefox
 
