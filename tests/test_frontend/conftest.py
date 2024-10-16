@@ -17,22 +17,9 @@ class PlaywrightTestBase(LiveServerTestCase):
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
         super().setUpClass()
 
-        # we just need to re-create the Site objects to match the new port of the live server
-        from django.contrib.sites.models import Site
-
-        Site.objects.all().delete()
-        Site.objects.create(
-            name=SiteName.apply_for_a_licence,
-            domain=f"{SiteName.apply_for_a_licence}:{cls.server_thread.port}",
-        )
-        Site.objects.create(
-            name=SiteName.view_a_licence,
-            domain=f"{SiteName.view_a_licence}:{cls.server_thread.port}",
-        )
-
         # starting playwright
         cls.playwright = sync_playwright().start()
-        cls.browser = cls.playwright.chromium.launch(headless=settings.HEADLESS)
+        cls.browser = cls.playwright.firefox.launch(headless=settings.HEADLESS)
 
     @classmethod
     def tearDownClass(cls):
@@ -41,9 +28,21 @@ class PlaywrightTestBase(LiveServerTestCase):
         super().tearDownClass()
 
     def setUp(self) -> None:
-        """Create a new page for each test"""
-
+        #  Create a new page for each test
         self.page = self.browser.new_page()
+
+        # need to re-create the Site objects to match the new port of the live server
+        from django.contrib.sites.models import Site
+
+        Site.objects.all().delete()
+        Site.objects.create(
+            name=SiteName.apply_for_a_licence,
+            domain=f"{SiteName.apply_for_a_licence}:{self.server_thread.port}",
+        )
+        Site.objects.create(
+            name=SiteName.view_a_licence,
+            domain=f"{SiteName.view_a_licence}:{self.server_thread.port}",
+        )
 
     @property
     def base_host(self):

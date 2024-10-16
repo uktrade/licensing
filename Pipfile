@@ -32,6 +32,7 @@ django-ratelimit = "~=4.1.0"
 dbt-platform-helper = "==10.4.0"
 gevent = "==24.2.1"
 psycopg2-binary = "*"
+pytest-playwright = "*"
 
 [dev-packages]
 black = "~=24.3"

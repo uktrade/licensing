@@ -15,8 +15,7 @@ def unittests(context: Any) -> None:
 
 @task
 def frontendtests(context: Any) -> None:
-    # we use django test runner for the frontend tests as pytest doesn't work well when running all of them together
-    context.run("pipenv run python django_app/manage.py test tests/test_frontend --settings=config.settings.test")
+    context.run(" pipenv run pytest tests/test_frontend --browser firefox")
 
 
 @task
