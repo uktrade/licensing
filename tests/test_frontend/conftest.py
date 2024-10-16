@@ -49,7 +49,7 @@ class PlaywrightTestBase(TransactionTestCase):
         cls.email_details(page)
         cls.verify_email(page)
 
-    def fill_uk_address_details(cls, page, type, details=data.UK_ADDRESS_DETAILS):
+    def fill_uk_address_details(cls, page, type="business", details=data.UK_ADDRESS_DETAILS):
         if type == "recipient" or type == "business":
             page.get_by_label(f"Name of {type}").fill(details["name"])
         page.get_by_label("Address line 1").fill(details["address_line_1"])
@@ -73,7 +73,7 @@ class PlaywrightTestBase(TransactionTestCase):
         page.get_by_label("No").check()
         page.get_by_role("button", name="Continue").click()
 
-    def your_details(cls, page, type, details=data.YOUR_DETAILS):
+    def your_details(cls, page, type="business", details=data.YOUR_DETAILS):
         if type == "myself":
             page.get_by_label("First name").fill("Test first name")
             page.get_by_label("Last name").fill("Test last name")

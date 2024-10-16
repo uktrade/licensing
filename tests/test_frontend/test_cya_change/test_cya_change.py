@@ -21,7 +21,7 @@ class TestCYAChange(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
         self.provider_business_located_in_uk(self.page)
         expect(self.page).to_have_url(re.compile(r".*/add-business"))
         self.no_more_additions(self.page)
-        self.recipient_simple(self.page, "business")
+        self.recipient_simple(self.page)
         expect(self.page).to_have_url(re.compile(r".*/add-recipient"))
         self.no_more_additions(self.page)
         self.licensing_grounds_simple(self.page)
