@@ -3,18 +3,16 @@ from django.core.cache.backends.dummy import DummyCache
 from django.forms import Form
 from django.http import HttpResponse
 
-from .base import *  # noqafrom apply_for_a_licence.models import UserEmailVerification
+from .local import *  # noqa
 
 TEST_EMAIL_VERIFY_CODE = True
 
-HEADLESS = True
-
-BASE_FRONTEND_TESTING_URL = "http://apply-for-a-licence:28000/apply/"
+HEADLESS = env.headless
 
 ENVIRONMENT = "test"
 
 # we don't want to connect to ClamAV in testing, redefine and remove from list
-FILE_UPLOAD_HANDLERS = ("core.custom_upload_handler.CustomFileUploadHandler",)  # Order is important
+FILE_UPLOAD_HANDLERS = ("core.custom_upload_handler.CustomFileUploadHandler",)
 
 
 # don't use redis when testing

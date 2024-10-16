@@ -1,10 +1,8 @@
 # End-to-End tests
 We use playwright for end-to-end testing.
-To run the end-to-end tests for licensing, start the django server using the test config settings:\
-`pipenv run python django_app/manage.py runserver --settings=config.settings.test`
+To run the end-to-end tests for licensing:\
+`invoke frontendtests`
 
-To run end-to-end tests only:\
-`pipenv run pytest tests/test_frontend`\
 
 Currently, end-to-end test must be run as testfiles separately
 e.g. `pipenv run pytest tests/test_frontend/test_business/test_business_details` as there are some issues when they are run as a full test-suite.

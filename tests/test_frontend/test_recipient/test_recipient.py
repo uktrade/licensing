@@ -4,7 +4,6 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
-    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -15,7 +14,7 @@ class TestRecipient(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
     """Tests for different journeys during the recipient part of the journey"""
 
     def test_interception_or_monitoring_journey(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)
@@ -31,7 +30,7 @@ class TestRecipient(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
         expect(self.page).to_have_url(re.compile(r".*/describe-specific-activities"))
 
     def test_add_another_recipient_and_remove(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)

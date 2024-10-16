@@ -4,7 +4,6 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
-    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -15,7 +14,7 @@ class TestAddBusiness(StartBase, ProviderBase, RecipientBase, LicensingGroundsBa
     """Tests for the business journey"""
 
     def test_third_party_located_in_uk(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)
@@ -33,7 +32,7 @@ class TestAddBusiness(StartBase, ProviderBase, RecipientBase, LicensingGroundsBa
         self.check_submission_complete_page(self.page)
 
     def test_not_third_party_located_outside_uk(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_not_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_outside_uk(self.page)
@@ -52,7 +51,7 @@ class TestAddBusiness(StartBase, ProviderBase, RecipientBase, LicensingGroundsBa
         self.check_submission_complete_page(self.page)
 
     def test_add_another_business_and_remove(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_not_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)

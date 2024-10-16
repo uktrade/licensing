@@ -4,7 +4,6 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
-    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -15,7 +14,7 @@ class TestAddMyself(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
     """Tests for the myself journey"""
 
     def test_located_in_uk(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.myself(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-name-nationality-location"))
         self.provider_myself_located_in_uk(self.page)
@@ -35,7 +34,7 @@ class TestAddMyself(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
         self.check_submission_complete_page(self.page)
 
     def test_add_another_individual_and_remove(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.myself(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-name-nationality-location"))
         self.provider_myself_located_in_uk(self.page)

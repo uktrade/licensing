@@ -4,7 +4,6 @@ from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
     LicensingGroundsBase,
-    PlaywrightTestBase,
     ProviderBase,
     RecipientBase,
     StartBase,
@@ -15,7 +14,7 @@ class TestCYAChange(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase
     """Test making a change on Check Your Answers"""
 
     def test_cya_changes(self):
-        self.page.goto(PlaywrightTestBase.base_url)
+        self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
         self.provider_business_located_in_uk(self.page)

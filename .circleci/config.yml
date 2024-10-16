@@ -118,6 +118,11 @@ jobs:
         - store_test_results:
             path: test-results
 
+        - run:
+            name: Run front-end tests
+            command: |
+              invoke frontendtests
+
 workflows:
   build_and_test:
     jobs:
