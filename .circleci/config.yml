@@ -104,6 +104,12 @@ jobs:
               pipenv run awslocal s3api put-bucket-cors --bucket permanent-document-bucket --cors-configuration file://./aws/cors.json
         - run: git submodule sync
         - run: git submodule update --init
+
+        - run:
+            name: Run front-end tests
+            command: |
+              invoke frontendtests
+
         - run:
             name: Check missing migrations (changes to models that haven't been added to migrations)
             command: pipenv run python django_app/manage.py makemigrations --check --dry-run --settings=config.settings.local
@@ -117,11 +123,6 @@ jobs:
 
         - store_test_results:
             path: test-results
-
-        - run:
-            name: Run front-end tests
-            command: |
-              invoke frontendtests
 
 workflows:
   build_and_test:
