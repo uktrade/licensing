@@ -83,6 +83,7 @@ jobs:
             PERMANENT_S3_BUCKET_ACCESS_KEY_ID: test
             PERMANENT_S3_BUCKET_SECRET_ACCESS_KEY: test
             HEADLESS: "True"
+            DJANGO_ALLOW_ASYNC_UNSAFE: "True"
         - image: cimg/postgres:16.1
           environment:
             POSTGRES_USER: postgres
