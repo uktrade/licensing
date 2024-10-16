@@ -11,6 +11,8 @@ commands:
          name: Install Python dependencies
          command: |
              pip install pipenv && pipenv install --dev
+             python -m playwright install
+
 
   restore_dependency_cache:
     description: "Restore dependency cache."
