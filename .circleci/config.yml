@@ -82,6 +82,7 @@ jobs:
             PERMANENT_S3_BUCKET_NAME: permanent-document-bucket
             PERMANENT_S3_BUCKET_ACCESS_KEY_ID: test
             PERMANENT_S3_BUCKET_SECRET_ACCESS_KEY: test
+            HEADLESS: True
         - image: cimg/postgres:16.1
           environment:
             POSTGRES_USER: postgres
