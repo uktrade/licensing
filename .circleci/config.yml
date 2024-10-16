@@ -10,9 +10,8 @@ commands:
       - run:
          name: Install Python dependencies
          command: |
-             pip install pipenv && pipenv install --dev
-             python -m playwright install
-
+             pip install pipenv
+             pipenv install --dev
 
   restore_dependency_cache:
     description: "Restore dependency cache."
@@ -112,8 +111,8 @@ jobs:
         - run:
             name: Run front-end tests
             command: |
-              playwright install --with-deps chromium
-              pipenv run python django_app/manage.py test tests/test_frontend --settings=config.settings.test
+              pipenv run playwright install --with-deps chromium
+              pipenv run pytest tests/test_frontend --browser firefox
 
         - run:
             name: Check missing migrations (changes to models that haven't been added to migrations)

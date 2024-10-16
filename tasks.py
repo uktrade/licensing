@@ -15,7 +15,7 @@ def unittests(context: Any) -> None:
 
 @task
 def frontendtests(context: Any) -> None:
-    context.run(" pipenv run pytest tests/test_frontend --browser firefox")
+    context.run("pipenv run pytest tests/test_frontend --browser firefox")
 
 
 @task
