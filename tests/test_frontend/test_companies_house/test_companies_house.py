@@ -1,4 +1,5 @@
 import re
+from unittest.mock import patch
 
 from playwright.sync_api import expect
 
@@ -19,7 +20,21 @@ class TestCompaniesHouse(StartBase, ProviderBase):
         self.page.get_by_role("button", name="Continue").click()
         expect(self.page).to_have_url(re.compile(r".*/where-business-located"))
 
-    def test_companies_house_number_incorrect(self):
+    @patch(
+        "apply_for_a_licence.forms.forms_business.get_details_from_companies_house",
+        return_value={
+            "company_name": "Test Company",
+            "company_number": "12345678",
+            "registered_office_address": {
+                "address_line_1": "1 Test Street",
+                "address_line_2": "Test Town",
+                "town_or_city": "Test City",
+                "postcode": "TE5 7PC",
+                "country": "United Kingdom",
+            },
+        },
+    )
+    def test_companies_house_number_incorrect(self, patched_companies_house):
         self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
@@ -34,7 +49,21 @@ class TestCompaniesHouse(StartBase, ProviderBase):
         expect(self.page.get_by_role("link", name="Number not recognised with")).to_be_visible()
         expect(self.page).to_have_url(re.compile(r".*/registered-company-number"))
 
-    def test_companies_house_number(self):
+    @patch(
+        "apply_for_a_licence.forms.forms_business.get_details_from_companies_house",
+        return_value={
+            "company_name": "Test Company",
+            "company_number": "12345678",
+            "registered_office_address": {
+                "address_line_1": "1 Test Street",
+                "address_line_2": "Test Town",
+                "town_or_city": "Test City",
+                "postcode": "TE5 7PC",
+                "country": "United Kingdom",
+            },
+        },
+    )
+    def test_companies_house_number(self, patched_companies_house):
         self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
