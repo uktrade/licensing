@@ -13,7 +13,7 @@ from tests.test_frontend.fixtures import data
 @override_settings(DEBUG=True)
 class PlaywrightTestBase(LiveServerTestCase):
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
         super().setUpClass()
 
@@ -22,7 +22,7 @@ class PlaywrightTestBase(LiveServerTestCase):
         cls.browser = cls.playwright.firefox.launch(headless=True)
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
         cls.browser.close()
         cls.playwright.stop()
         super().tearDownClass()
@@ -48,19 +48,21 @@ class PlaywrightTestBase(LiveServerTestCase):
         )
 
     @property
-    def base_host(self):
+    def base_host(self) -> str:
         return settings.APPLY_FOR_A_LICENCE_DOMAIN.split(":")[0]
 
     @property
-    def base_url(self):
+    def base_url(self) -> str:
         return f"http://{self.base_host}:{self.server_thread.port}"
 
     def tearDown(self) -> None:
-        """Close the page after each test"""
         if settings.SAVE_VIDEOS:
-            # Rename the video in the test results directory
+            # Rename the video in the test results directory, so it's readable
+            # 1231239190wei9cwice023r239230.webm -> video-test-results/ClassName-test_method.webm
             old_name = self.page.video.path()
             os.replace(old_name, settings.ROOT_DIR / f"video-test-results/{type(self).__name__}-{self._testMethodName}.webm")
+
+        # close the page
         self.page.close()
 
     def email_details(self, page, details=data.EMAIL_DETAILS):
