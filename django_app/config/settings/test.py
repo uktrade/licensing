@@ -9,7 +9,7 @@ TEST_EMAIL_VERIFY_CODE = True
 
 HEADLESS = env.headless
 
-SAVE_VIDEOS = env.save_videos
+SAVE_VIDEOS = True
 
 ENVIRONMENT = "test"
 

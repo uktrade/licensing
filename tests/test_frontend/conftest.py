@@ -1,6 +1,5 @@
 import os
 import re
-import tempfile
 
 from core.sites import SiteName
 from django.conf import settings
@@ -31,7 +30,7 @@ class PlaywrightTestBase(LiveServerTestCase):
     def setUp(self) -> None:
         #  Create a new page for each test
         if settings.SAVE_VIDEOS:
-            self.page = self.browser.new_page(record_video_dir=tempfile.gettempdir())
+            self.page = self.browser.new_page(record_video_dir="video-test-results/")
         else:
             self.page = self.browser.new_page()
 
@@ -58,11 +57,11 @@ class PlaywrightTestBase(LiveServerTestCase):
 
     def tearDown(self) -> None:
         """Close the page after each test"""
-        self.page.close()
-
         if settings.SAVE_VIDEOS:
-            # Save the video to the test results directory
-            self.page.video.save_as(f"video-test-results/{type(self).__name__}/{self._testMethodName}.webm")
+            # Rename the video in the test results directory
+            old_name = self.page.video.path()
+            os.replace(old_name, settings.ROOT_DIR / f"video-test-results/{type(self).__name__}-{self._testMethodName}.webm")
+        self.page.close()
 
     def email_details(self, page, details=data.EMAIL_DETAILS):
         page.get_by_label("What is your email address?").fill(details["email"])
