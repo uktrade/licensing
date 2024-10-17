@@ -20,7 +20,7 @@ class PlaywrightTestBase(LiveServerTestCase):
 
         # starting playwright stuff
         cls.playwright = sync_playwright().start()
-        cls.browser = cls.playwright.firefox.launch(headless=False)
+        cls.browser = cls.playwright.firefox.launch(headless=True)
 
     @classmethod
     def tearDownClass(cls):
