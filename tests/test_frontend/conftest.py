@@ -13,6 +13,8 @@ from tests.test_frontend.fixtures import data
 
 @override_settings(DEBUG=True)
 class PlaywrightTestBase(LiveServerTestCase):
+    """Base class for Playwright tests. Sets up the Playwright browser, page per test, and deals with the Site objects."""
+
     @classmethod
     def setUpClass(cls) -> None:
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -83,20 +85,32 @@ class PlaywrightTestBase(LiveServerTestCase):
     def base_url(self) -> str:
         return f"http://{self.base_host}:{self.server_thread.port}"
 
-    def email_details(self, page, details=data.EMAIL_DETAILS):
-        page.get_by_label("What is your email address?").fill(details["email"])
-        page.get_by_role("button", name="Continue").click()
-
-    def verify_email(self, page, details=data.EMAIL_DETAILS):
-        page.get_by_role("heading", name="We've sent you an email").click()
-        page.get_by_label("Enter the 6 digit security").fill(details["verify_code"])
-        page.get_by_role("button", name="Continue").click()
-
     def verify_email_details(self, page):
         self.email_details(page)
         self.verify_email(page)
 
-    def fill_uk_address_details(self, page, type="business", details=data.UK_ADDRESS_DETAILS):
+    def check_your_answers(self, page, third_party=True, type="business"):
+        expect(page).to_have_url(re.compile(r".*/check-your-answers"))
+        if type != "myself":
+            self.cya_your_details(page, third_party)
+        expect(page.get_by_test_id("previous-licence")).to_have_text("No")
+        self.cya_overview(page)
+        self.cya_recipients(page)
+        self.cya_purposes(page)
+
+    @staticmethod
+    def email_details(page, details=data.EMAIL_DETAILS):
+        page.get_by_label("What is your email address?").fill(details["email"])
+        page.get_by_role("button", name="Continue").click()
+
+    @staticmethod
+    def verify_email(page, details=data.EMAIL_DETAILS):
+        page.get_by_role("heading", name="We've sent you an email").click()
+        page.get_by_label("Enter the 6 digit security").fill(details["verify_code"])
+        page.get_by_role("button", name="Continue").click()
+
+    @staticmethod
+    def fill_uk_address_details(page, type="business", details=data.UK_ADDRESS_DETAILS):
         if type == "recipient" or type == "business":
             page.get_by_label(f"Name of {type}").fill(details["name"])
         page.get_by_label("Address line 1").fill(details["address_line_1"])
@@ -104,7 +118,8 @@ class PlaywrightTestBase(LiveServerTestCase):
         page.get_by_label("Postcode").fill(details["postcode"])
         page.get_by_role("button", name="Continue").click()
 
-    def fill_non_uk_address_details(self, page, type="business", details=data.NON_UK_ADDRESS_DETAILS):
+    @staticmethod
+    def fill_non_uk_address_details(page, type="business", details=data.NON_UK_ADDRESS_DETAILS):
         if type == "recipient" or type == "business":
             page.get_by_label(f"Name of {type}").fill(details["name"])
         page.get_by_label("Country").select_option(details["country"])
@@ -112,15 +127,18 @@ class PlaywrightTestBase(LiveServerTestCase):
         page.get_by_label("Address line 1").fill(details["address_line_1"])
         page.get_by_role("button", name="Continue").click()
 
-    def declaration_and_complete_page(self, page):
+    @staticmethod
+    def declaration_and_complete_page(page):
         page.get_by_label("I agree and accept").check()
         page.get_by_role("button", name="Submit").click()
 
-    def no_more_additions(self, page):
+    @staticmethod
+    def no_more_additions(page):
         page.get_by_label("No").check()
         page.get_by_role("button", name="Continue").click()
 
-    def your_details(self, page, type="business", details=data.YOUR_DETAILS):
+    @staticmethod
+    def your_details(page, type="business", details=data.YOUR_DETAILS):
         if type == "myself":
             page.get_by_label("First name").fill("Test first name")
             page.get_by_label("Last name").fill("Test last name")
@@ -131,15 +149,6 @@ class PlaywrightTestBase(LiveServerTestCase):
             page.get_by_label("Business you work for").fill(details["business"])
             page.get_by_label("Your role").fill(details["role"])
             page.get_by_role("button", name="Continue").click()
-
-    def check_your_answers(self, page, third_party=True, type="business"):
-        expect(page).to_have_url(re.compile(r".*/check-your-answers"))
-        if type != "myself":
-            self.cya_your_details(page, third_party)
-        expect(page.get_by_test_id("previous-licence")).to_have_text("No")
-        self.cya_overview(page)
-        self.cya_recipients(page)
-        self.cya_purposes(page)
 
     @staticmethod
     def cya_your_details(page, third_party):
