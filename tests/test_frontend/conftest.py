@@ -62,7 +62,7 @@ class PlaywrightTestBase(LiveServerTestCase):
 
         if settings.SAVE_VIDEOS:
             # Save the video to the test results directory
-            self.page.video.save_as(f"video-test-results/{self._testMethodName}.webm")
+            self.page.video.save_as(f"video-test-results/{type(self).__name__}/{self._testMethodName}.webm")
 
     def email_details(self, page, details=data.EMAIL_DETAILS):
         page.get_by_label("What is your email address?").fill(details["email"])
