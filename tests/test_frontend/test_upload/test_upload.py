@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from playwright.sync_api import expect
 
 from tests.test_frontend.conftest import (
@@ -13,7 +14,7 @@ from tests.test_frontend.conftest import (
 class TestUpload(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase):
     """Test upload works"""
 
-    def test_third_party_located_in_uk(self):
+    def test_upload(self):
         self.page.goto(self.base_url)
         self.business_third_party(self.page)
         expect(self.page).to_have_url(re.compile(r".*/your-details"))
@@ -26,7 +27,7 @@ class TestUpload(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase):
         self.page.get_by_label("What is your purpose for").fill("Test purpose")
         self.page.get_by_role("button", name="Continue").click()
         self.page.get_by_text("Choose files").click()
-        self.page.get_by_label("Upload a file").set_input_files("./tests/test_frontend/fixtures/Test.pdf")
+        self.page.get_by_label("Upload a file").set_input_files(settings.ROOT_DIR / "tests/test_frontend/fixtures/Test.pdf")
         expect(self.page.locator("text=Test.pdf")).to_be_visible()
         self.page.wait_for_timeout(2000)  # Wait for the doc to upload
         self.page.get_by_role("button", name="Continue").click()
