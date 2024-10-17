@@ -29,7 +29,10 @@ class PlaywrightTestBase(LiveServerTestCase):
 
     def setUp(self) -> None:
         #  Create a new page for each test
-        self.page = self.browser.new_page()
+        if settings.SAVE_VIDEOS:
+            self.page = self.browser.new_page(record_video_dir="video-test-results/")
+        else:
+            self.page = self.browser.new_page()
 
         # need to re-create the Site objects to match the new port of the live server
         from django.contrib.sites.models import Site

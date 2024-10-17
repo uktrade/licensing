@@ -9,6 +9,8 @@ TEST_EMAIL_VERIFY_CODE = True
 
 HEADLESS = env.headless
 
+SAVE_VIDEOS = env.save_videos
+
 ENVIRONMENT = "test"
 
 # we don't want to connect to ClamAV in testing, redefine and remove from list

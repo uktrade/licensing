@@ -117,6 +117,7 @@ class LocalSettings(BaseSettings):
 
 class TestSettings(LocalSettings):
     headless: bool = False
+    save_videos: bool = False  # Save videos of the tests
 
 
 class GovPaasSettings(BaseSettings):

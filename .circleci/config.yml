@@ -86,6 +86,7 @@ jobs:
             PERMANENT_S3_BUCKET_SECRET_ACCESS_KEY: test
             HEADLESS: true
             DJANGO_ALLOW_ASYNC_UNSAFE: "True"
+            SAVE_VIDEOS: true
         - image: cimg/postgres:16.1
           environment:
             POSTGRES_USER: postgres
@@ -129,6 +130,9 @@ jobs:
 
         - store_test_results:
             path: test-results
+
+        - store_artifacts:
+            path: video-test-results
 
 workflows:
   build_and_test:
