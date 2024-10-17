@@ -26,6 +26,7 @@ class TestUpload(StartBase, ProviderBase, RecipientBase, LicensingGroundsBase):
         self.no_more_additions(self.page)
         self.page.get_by_label("What is your purpose for").fill("Test purpose")
         self.page.get_by_role("button", name="Continue").click()
+        self.page.wait_for_timeout(2000)  # Wait for the page to load
         self.page.get_by_text("Choose files").click()
         self.page.get_by_label("Upload a file").set_input_files(settings.ROOT_DIR / "tests/test_frontend/fixtures/Test.pdf")
         expect(self.page.locator("text=Test.pdf")).to_be_visible()
