@@ -17,7 +17,7 @@ class PlaywrightTestBase(LiveServerTestCase):
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
         super().setUpClass()
 
-        # starting playwright
+        # starting playwright stuff
         cls.playwright = sync_playwright().start()
         cls.browser = cls.playwright.firefox.launch(headless=True)
 
