@@ -10,7 +10,7 @@ def test(context: Any) -> None:
 
 @task
 def unittests(context: Any) -> None:
-    context.run("pipenv run pytest tests/test_unit")
+    context.run("pipenv run pytest tests/test_unit --create-db")
 
 
 @task
