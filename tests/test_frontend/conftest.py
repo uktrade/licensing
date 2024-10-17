@@ -3,6 +3,7 @@ import re
 
 from core.sites import SiteName
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.test import override_settings
 from django.test.testcases import LiveServerTestCase
 from playwright.sync_api import expect, sync_playwright
@@ -25,6 +26,7 @@ class PlaywrightTestBase(LiveServerTestCase):
     def tearDownClass(cls) -> None:
         cls.browser.close()
         cls.playwright.stop()
+
         super().tearDownClass()
 
     def setUp(self) -> None:
@@ -34,10 +36,15 @@ class PlaywrightTestBase(LiveServerTestCase):
         else:
             self.page = self.browser.new_page()
 
-        # need to re-create the Site objects to match the new port of the live server
-        from django.contrib.sites.models import Site
+        # need to re-create the Site objects to match the new port of the live server,
+        # first we just need to get the original port
+        first_site = Site.objects.first()
+        self.original_port = first_site.domain.split(":")[-1]
 
+        # deleting
         Site.objects.all().delete()
+
+        # recreating with the new port
         Site.objects.create(
             name=SiteName.apply_for_a_licence,
             domain=f"{SiteName.apply_for_a_licence}:{self.server_thread.port}",
@@ -47,14 +54,6 @@ class PlaywrightTestBase(LiveServerTestCase):
             domain=f"{SiteName.view_a_licence}:{self.server_thread.port}",
         )
 
-    @property
-    def base_host(self) -> str:
-        return settings.APPLY_FOR_A_LICENCE_DOMAIN.split(":")[0]
-
-    @property
-    def base_url(self) -> str:
-        return f"http://{self.base_host}:{self.server_thread.port}"
-
     def tearDown(self) -> None:
         if settings.SAVE_VIDEOS:
             # Rename the video in the test results directory, so it's readable
@@ -62,8 +61,27 @@ class PlaywrightTestBase(LiveServerTestCase):
             old_name = self.page.video.path()
             os.replace(old_name, settings.ROOT_DIR / f"video-test-results/{type(self).__name__}-{self._testMethodName}.webm")
 
+        # resetting the Site objects to their original state
+        Site.objects.all().delete()
+        Site.objects.create(
+            name=SiteName.apply_for_a_licence,
+            domain=f"{SiteName.apply_for_a_licence}:{self.original_port}",
+        )
+        Site.objects.create(
+            name=SiteName.view_a_licence,
+            domain=f"{SiteName.view_a_licence}:{self.original_port}",
+        )
+
         # close the page
         self.page.close()
+
+    @property
+    def base_host(self) -> str:
+        return settings.APPLY_FOR_A_LICENCE_DOMAIN.split(":")[0]
+
+    @property
+    def base_url(self) -> str:
+        return f"http://{self.base_host}:{self.server_thread.port}"
 
     def email_details(self, page, details=data.EMAIL_DETAILS):
         page.get_by_label("What is your email address?").fill(details["email"])
