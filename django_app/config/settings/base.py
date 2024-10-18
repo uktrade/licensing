@@ -199,7 +199,6 @@ EMAIL_VERIFY_CODE_TEMPLATE_ID = env.email_verify_code_template_id
 NEW_OTSI_USER_TEMPLATE_ID = env.new_otsi_user_template_id
 PUBLIC_USER_NEW_APPLICATION_TEMPLATE_ID = env.public_user_new_application_template_id
 OTSI_NEW_APPLICATION_TEMPLATE_ID = env.otsi_new_application_template_id
-RESTRICT_SENDING = env.restrict_sending  # if True, only send to whitelisted domains
 if "," in env.new_application_alert_recipients:  # check if multiple recipients
     NEW_APPLICATION_ALERT_RECIPIENTS = env.new_application_alert_recipients.split(",")
 else:
