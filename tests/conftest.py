@@ -1,8 +1,12 @@
+from unittest import mock
+
+import notifications_python_client
 import pytest
 from core.sites import SiteName
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.test import Client, RequestFactory
+from utils import notifier
 
 from tests.factories import LicenceFactory
 from tests.helpers import get_test_client
@@ -68,3 +72,10 @@ def post_request_object(request_object):
 @pytest.fixture()
 def licence():
     return LicenceFactory()
+
+
+@pytest.fixture(autouse=True)
+def patched_send_email(monkeypatch):
+    """We don't want to send emails when running tests"""
+    mock_notifications_api_client = mock.create_autospec(notifications_python_client.notifications.NotificationsAPIClient)
+    monkeypatch.setattr(notifier, "NotificationsAPIClient", mock_notifications_api_client)
